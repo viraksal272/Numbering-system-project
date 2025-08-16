@@ -90,9 +90,9 @@ void DecToOctal() {
         printf(" ");
     }
     printf("%s\n\n",text);
-    printf("Please enter your Decimal number : ");
+    printf("Please enter your Decimal Number : ");
     scanf("%llu",&num);
-    //Please write the algorithm here
+
 
 }
 void DecToHex() {
