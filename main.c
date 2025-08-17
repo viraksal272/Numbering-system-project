@@ -135,6 +135,7 @@ void DecimalToOctal(char deciNum[50]) {
             int remainder = intValue % 8;
             intOctalNum += remainder * place;
             place *= 10;
+
         }
 
     }
