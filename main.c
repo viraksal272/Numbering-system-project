@@ -111,3 +111,8 @@ int main() {
     }
     return 0;
 }
+void DecimalToOctal(char deciNum[50]) {
+    char integerPart[20];
+    char fractionalPart[20];
+
+}
