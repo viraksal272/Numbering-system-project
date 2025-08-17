@@ -114,5 +114,28 @@ int main() {
 void DecimalToOctal(char deciNum[50]) {
     char integerPart[20];
     char fractionalPart[20];
+    char fractionalFloatStr[25];
+    char *dotPosition = strchr(deciNum, '.');
 
+    if (dotPosition != NULL) {
+        size_t intLen = dotPosition - deciNum;
+        strcpy(fractionalPart, dotPosition + 1);
+        fractionalPart[intLen] = '\0';
+        int place = 1;
+        int intOctalNum = 0;
+        int count = 0;
+        int len = 0;
+        char fracOctaStr[50] = "";
+        strcpy(fractionalPart, dotPosition + 1);
+        int intValue = atoi(integerPart);
+        snprintf(fractionalFloatStr, sizeof(fractionalFloatStr), "0.%s", fractionalPart);
+        float fractionalValue = atof(fractionalFloatStr);
+
+        while (intValue > 0) {
+            int remainder = intValue % 8;
+            intOctalNum += remainder * place;
+            place *= 10;
+        }
+
+    }
 }
