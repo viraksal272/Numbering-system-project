@@ -3,6 +3,27 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <conio.h>
+#include <math.h>
+
+void getDecimalInput(char *buf, size_t size) {
+  printf("Enter decimal number: ");
+  fgets(buf, size, stdin);
+
+  size_t len = strlen(buf);
+  if (len > 0 && buf[len - 1] == '\n') {
+    buf[len - 1] = '\0';
+  }
+}
+
+void reverse(char hexResult[]) {
+  int i, j;
+  char temp;
+  for (i = 0, j = strlen(hexResult) - 1; i < j; i++, j--) {
+    temp = hexResult[i];
+    hexResult[i] = hexResult[j];
+    hexResult[j] = temp;
+  }
+}
 
 void decimalToBinary(char deciNum[50]) {
     char integerPart[20];
@@ -57,7 +78,14 @@ void decimalToBinary(char deciNum[50]) {
         strcpy(integerPart, deciNum);
         fractionalPart[0] = '\0';
 
-        int intValue = atoi(integerPart);
+        long intValue = atoi(integerPart);
+        if (intValue == 0) {
+          printf("===================================\n");
+          printf("| Decimal: %s\n", deciNum);
+          printf("| Binary : 0\n");
+          printf("===================================\n");
+          return;
+        }
 
         while (intValue > 0) {
           const int remainder = intValue % 2;
@@ -85,13 +113,20 @@ void decimalToOctal(char decimalNum[50]) {
     strcpy(intPart, decimalNum);
     fracPart[0] = '\0';
 
-    long intOctal = atoi(intPart);
+    long intDeci = atoi(intPart);
+    if (intDeci == 0) {
+      printf("===================================\n");
+      printf("| Decimal: %s\n", decimalNum);
+      printf("| Octal  : 0\n");
+      printf("===================================\n");
+      return;
+    }
 
-    while (intOctal > 0) {
-      int remainder = intOctal % 8;
+    while (intDeci > 0) {
+      int remainder = intDeci % 8;
       octalResult += remainder * place;
       place *= 10;
-      intOctal /= 8;
+      intDeci /= 8;
     }
 
     printf("===================================\n");
@@ -107,31 +142,31 @@ void decimalToOctal(char decimalNum[50]) {
     long int intOctalResult = 0;
 
     strcpy(fracPart, dotPost + 1);
-    long intOctal = atoi(intPart);
+    long integerPart = atoi(intPart);
 
-    while (intOctal > 0) {
-      int r = intOctal % 8; // r stands for remainder
+    while (integerPart > 0) {
+      int r = integerPart % 8; // r stands for remainder 
       intOctalResult += r * place;
       place *= 10;
-      intOctal /= 8;
+      integerPart /= 8;
     }
 
     snprintf(fracFloatStr, sizeof(fracFloatStr), "0.%s", fracPart);
-    float fracOctal = atof(fracFloatStr);
+    float fractionalPart = atof(fracFloatStr);
     int count = 0;
     int len = 0;
     char fracOctStr[50] = "";
 
     while (count <= 15) {
-      fracOctal *= 8;
-      int digit = (int)fracOctal;
-      fracOctal -= digit;
+      fractionalPart *= 8;
+      int digit = (int)fractionalPart;
+      fractionalPart -= digit;
 
       int len = strlen(fracOctStr);
       fracOctStr[len] = digit + '0';
       fracOctStr[len + 1] = '\0';
 
-      if (fracOctal == 0.00) break;
+      if (fractionalPart == 0.00) break;
 
       count++;
     }
@@ -143,9 +178,88 @@ void decimalToOctal(char decimalNum[50]) {
   }
 }
 
-// void decimalToHexadecimal(char decimalNumber[50]) {
+void decimalToHexa(char decimalNumber[50]) {
+  char intPart[20];
+  char fracPart[20];
+  char fracStr[25];
+  char *dotPost = strchr(decimalNumber, '.');
 
-// }
+  if (dotPost == NULL) {
+    char hexResult[50] = "";
+    strcpy(intPart, decimalNumber);
+    fracPart[0] = '\0';
+
+    long deciNum = atoi(intPart);
+    if (deciNum == 0) {
+      printf("===================================\n");
+      printf("| Decimal    : %s\n", decimalNumber);
+      printf("| Hexadecimal: 0\n");
+      printf("===================================\n");
+      return;
+    }
+
+    while (deciNum > 0) {
+      int remainder = deciNum % 16;
+      char digit = (remainder < 10) ? (remainder + '0') : ('A' + (remainder - 10));
+      int len = strlen(hexResult);
+      hexResult[len] = digit;
+      hexResult[len + 1] = '\0';
+      deciNum /= 16;
+    }
+
+    reverse(hexResult);
+    printf("===================================\n");
+    printf("| Decimal    : %s\n", decimalNumber);
+    printf("| Hexadecimal: %s\n", hexResult);
+    printf("===================================\n");
+  }
+  else {
+    size_t intLen = dotPost - decimalNumber;
+    strncpy(intPart, decimalNumber, intLen);
+    intPart[intLen] = '\0';
+    char intPartResult[50] = "";
+    strcpy(fracPart, dotPost + 1);
+    long intDeci = atoi(intPart);
+
+    while (intDeci > 0) {
+      int remainder = intDeci % 16;
+      char digit = (remainder < 10) ? (remainder + '0') : ('A' + (remainder - 10));
+      int len = strlen(intPartResult);
+      intPartResult[len] = digit;
+      intPartResult[len + 1] = '\0';
+      intDeci /= 16;
+    }
+
+    snprintf(fracStr, sizeof(fracStr), "0.%s", fracPart);
+    double fracDeci = atof(fracStr);
+    int count = 0;
+    int len = 0;
+    char fracPartResult[50] = "";
+
+
+    while (count <= 15) {
+      fracDeci *= 16;
+      int eachDigit = (int)fracDeci;
+      char digit = (eachDigit < 10) ? (eachDigit + '0') : ('A' + (eachDigit - 10));
+      int len = strlen(fracPartResult);
+      fracPartResult[len] = digit;
+      fracPartResult[len + 1] = '\0';
+      fracDeci -= eachDigit;
+
+      if (fabs(fracDeci) < 1e-12) break;
+      count++;
+    }
+
+    reverse(intPartResult);
+    if (strlen(intPartResult) == 0) {
+      strcpy(intPartResult, "0");
+    }
+    printf("===================================\n");
+    printf("| Decimal    : %s\n", decimalNumber);
+    printf("| Hexadecimal: %s.%s\n", intPartResult, fracPartResult);
+    printf("===================================\n");
+  }
+}
 int main() {
 
     while (true) {
@@ -157,43 +271,34 @@ int main() {
       printf("=========================================\n");
       char ch; // get choice from the user
       printf("Enter your choice: ");
-
+      
       ch = getch();
 
       printf("\n");
       if (ch == 27) {
         printf("Exiting program...!\n");
+        printf("Program exited!");
         break;
       }
+
+      char deciInput[50];
 
       printf("\n");
       switch (ch){
         case 'A':
         case 'a':
-                char deciNum[50];
-
-                printf("Enter decimal number: ");
-                fgets(deciNum, sizeof(deciNum), stdin);
-
-                size_t len = strlen(deciNum);
-                if (len > 0 && deciNum[len - 1] == '\n') {
-                  deciNum[len - 1] = '\0';
-                }
-                decimalToBinary(deciNum);
+                getDecimalInput(deciInput, sizeof(deciInput));
+                decimalToBinary(deciInput);
                 break;
         case 'B':
         case 'b':
-                char deciNumber[50];
-
-                printf("Enter decimal number: ");
-                fgets(deciNumber, sizeof(deciNumber), stdin);
-
-                size_t leng = strlen(deciNumber);
-                if (leng > 0 && deciNumber[leng - 1] == '\n') {
-                  deciNumber[leng - 1] = '\0';
-                }
-
-                decimalToOctal(deciNumber);
+                getDecimalInput(deciInput, sizeof(deciInput));
+                decimalToOctal(deciInput);
+                break;
+        case 'C':
+        case 'c':
+                getDecimalInput(deciInput, sizeof(deciInput));
+                decimalToHexa(deciInput);
                 break;
         default:
           printf("Invalid input...!\n");
